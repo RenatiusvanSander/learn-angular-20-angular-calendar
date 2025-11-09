@@ -2,6 +2,23 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
 
+## set-up
+
+Create a workspace
+```bash
+ng n ng learn-angular-20-angular-calendar --standalone false
+```
+
+Now run ng add:
+```bash
+ng add angular-calendar --standalone false
+```
+
+Create a component that is not standalone:
+```bash
+ng g c MyCalendar --standalone false
+```
+
 ## Development server
 
 To start a local development server, run:
