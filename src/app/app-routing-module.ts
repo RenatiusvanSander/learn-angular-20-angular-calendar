@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MyCalendar } from './my-calendar/my-calendar';
 import { KitchenSinkExample } from './kitchen-sink-example/kitchen-sink-example';
+import { TutoringAppointmentCalender } from './project/tutoring-appointment-calender/tutoring-appointment-calender';
 
 const routes: Routes = [
   {
@@ -9,6 +10,9 @@ const routes: Routes = [
   },
   {
     path: 'kitchen-sink', component: KitchenSinkExample
+  },
+  {
+    path: 'tutoring-appointment-calender', component: TutoringAppointmentCalender
   }
 ];
 

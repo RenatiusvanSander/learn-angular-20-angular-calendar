@@ -29,7 +29,7 @@ export const colors: Record<string, EventColor> = {
   red: {
     primary: '#ad2121',
     secondary: '#FAE3E3',
-    secondaryText: '#ff0000',
+    secondaryText: '#1e90ff',
   },
   blue: {
     primary: '#1e90ff',
@@ -39,7 +39,7 @@ export const colors: Record<string, EventColor> = {
   yellow: {
     primary: '#e3bc08',
     secondary: '#FDF1BA',
-    secondaryText: '#e3bc08',
+    secondaryText: '#1e90ff',
   },
 };
 
@@ -211,22 +211,40 @@ export class KitchenSinkExample {
   resolveColor(event: CalendarEvent, colorType: string): string {
     let color = event.color;
 
-    let returnValue = '';
+    let foundColor: EventColor = this.getColor(color);
+
+    let returnValue: string | undefined = '';
     switch (colorType) {
       case 'primary':
         let primaryValue = color?.primary
-        returnValue = !primaryValue ? '#1e90ff' : primaryValue;
+        returnValue = !primaryValue ? foundColor.primary : primaryValue;
         break;
       case 'secondary':
         let secondaryValue = color?.secondary;
-        returnValue = !secondaryValue ? '#D1E8FF' : secondaryValue;
+        returnValue = !secondaryValue ? foundColor.secondary : secondaryValue;
         break;
       case 'secondaryText':
         let secondaryTextValue = event.color?.secondaryText;
-        returnValue = !secondaryTextValue ? '#1e90ff' : secondaryTextValue;
+        returnValue = !secondaryTextValue ? foundColor.secondaryText : secondaryTextValue;
         break;
     }
 
-    return returnValue;
+    return returnValue === undefined ? '' : returnValue;
+  }
+
+  private getColor(color: EventColor | undefined): EventColor {
+    let foundColor: EventColor = {
+      primary: '', secondary: '',
+      secondaryText: ''
+    };
+    for (let colorKey in colors) {
+      let colorValue = colors[colorKey];
+
+      if (color?.primary === colorValue.primary) {
+        foundColor = colorValue;
+      }
+    }
+
+    return foundColor;
   }
 }
