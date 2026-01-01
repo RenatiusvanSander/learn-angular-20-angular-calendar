@@ -9,12 +9,14 @@ import { KitchenSinkExample } from './kitchen-sink-example/kitchen-sink-example'
 import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
+import { TutoringAppointmentCalender } from './project/tutoring-appointment-calender/tutoring-appointment-calender';
 
 @NgModule({
   declarations: [
     App,
     MyCalendar,
     KitchenSinkExample,
+    TutoringAppointmentCalender,
   ],
   imports: [
     BrowserModule,
