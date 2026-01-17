@@ -10,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
 import { TutoringAppointmentCalender } from './project/tutoring-appointment-calender/tutoring-appointment-calender';
+import { CreateTutoringDate } from './project/modals/create-tutoring-date/create-tutoring-date';
+import { EditTutoringDate } from './project/modals/edit-tutoring-date/edit-tutoring-date';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { TutoringAppointmentCalender } from './project/tutoring-appointment-cale
     MyCalendar,
     KitchenSinkExample,
     TutoringAppointmentCalender,
+    CreateTutoringDate,
+    EditTutoringDate,
   ],
   imports: [
     BrowserModule,

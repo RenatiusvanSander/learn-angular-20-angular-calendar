@@ -25,6 +25,7 @@ import {
 } from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
 import { colors } from '../colors';
+import { CreateTutoringDate } from '../modals/create-tutoring-date/create-tutoring-date';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -121,17 +122,34 @@ refresh = new Subject<void>();
   ];
 
   activeDayIsOpen: boolean = true;
+  openCreateTutoringDateModal: boolean = false;
 
   private modal = inject(NgbModal);
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    this.openCreateTutoringDateModal = false;
+
     if (isSameMonth(date, this.viewDate)) {
-      if ( (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) || (events.length === 0) ) {
+      if(!isSameDay(this.viewDate, date) && (this.activeDayIsOpen === false) && (events.length === 0)) {
+        this.activeDayIsOpen = true;
+        this.openCreateTutoringDateModal = true;
+      } else if ( (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ) {
         this.activeDayIsOpen = false;
+      } else if ( !isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) {
+        this.activeDayIsOpen = events.length > 0 ? true : false;
+        this.openCreateTutoringDateModal = events.length === 0;
       } else {
         this.activeDayIsOpen = true;
       }
       this.viewDate = date;
+
+      if(this.openCreateTutoringDateModal) {
+        this.handleEvent('notSameDay Empty Date clicked', {} as CalendarEvent);
+
+        if(this.activeDayIsOpen === false) {
+          this.activeDayIsOpen = true;
+        }
+      }
     }
   }
 
@@ -154,8 +172,11 @@ refresh = new Subject<void>();
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    this.modalData = { event, action };
-    this.modal.open(this.modalContent, { size: 'lg' });
+    // this.modalData = { event, action };
+    // this.modal.open(this.modalContent, { size: 'lg' });
+    const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
+    modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
+    modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
   }
 
   addEvent(): void {
