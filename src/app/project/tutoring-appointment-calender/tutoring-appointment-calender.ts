@@ -26,6 +26,8 @@ import {
 import { EventColor } from 'calendar-utils';
 import { colors } from '../colors';
 import { CreateTutoringDate } from '../modals/create-tutoring-date/create-tutoring-date';
+import { CalendarEventHelper } from '../helpers/calendar-event-helper';
+import { ColorsHelper } from '../helpers/colors-helper';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -171,28 +173,23 @@ refresh = new Subject<void>();
     this.handleEvent('Dropped or resized', event);
   }
 
-  handleEvent(action: string, event: CalendarEvent): void {
-    // this.modalData = { event, action };
-    // this.modal.open(this.modalContent, { size: 'lg' });
+  async handleEvent(action: string, event: CalendarEvent): Promise<void> {
+    event = CalendarEventHelper.createCalendarEvent();
     const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
     modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
     modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+
+    const result = await modalTutoringAppointmentCalenadar.result;
+
+    if((result.action === 'save') && (result.event !== undefined)) {
+      this.addEvent(result.event);
+    }
   }
 
-  addEvent(): void {
+  addEvent(event: CalendarEvent | undefined): void {
     this.events = [
       ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors['red'],
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
+      event === undefined ? CalendarEventHelper.createCalendarEvent(): event,
     ];
   }
 
@@ -209,42 +206,6 @@ refresh = new Subject<void>();
   }
 
   resolveColor(event: CalendarEvent, colorType: string): string {
-    let color = event.color;
-
-    let foundColor: EventColor = this.getColor(color);
-
-    let returnValue: string | undefined = '';
-    switch (colorType) {
-      case 'primary':
-        let primaryValue = color?.primary
-        returnValue = !primaryValue ? foundColor.primary : primaryValue;
-        break;
-      case 'secondary':
-        let secondaryValue = color?.secondary;
-        returnValue = !secondaryValue ? foundColor.secondary : secondaryValue;
-        break;
-      case 'secondaryText':
-        let secondaryTextValue = event.color?.secondaryText;
-        returnValue = !secondaryTextValue ? foundColor.secondaryText : secondaryTextValue;
-        break;
-    }
-
-    return returnValue === undefined ? '' : returnValue;
-  }
-
-  private getColor(color: EventColor | undefined): EventColor {
-    let foundColor: EventColor = {
-      primary: '', secondary: '',
-      secondaryText: ''
-    };
-    for (let colorKey in colors) {
-      let colorValue = colors[colorKey];
-
-      if (color?.primary === colorValue.primary) {
-        foundColor = colorValue;
-      }
-    }
-
-    return foundColor;
+    return ColorsHelper.resolveColor(event, colorType);
   }
 }

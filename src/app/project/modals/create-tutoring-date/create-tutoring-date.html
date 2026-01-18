@@ -1,12 +1,99 @@
 		<div class="modal-header">
-			<h4 class="modal-title">Hi there!</h4>
+			<h4 class="modal-title">Create a tutoring appointment!</h4>
 			<button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 		</div>
 		<div class="modal-body">
-			<p>Hello,</p>
-            <p>{{action}}</p>
-            <p>{{event}}</p>
+			<div class="table-responsive">
+				<table class="table table-bordered">
+
+					<tbody>
+						<tr>
+							<td>
+								Title
+							</td>
+							<td>
+								<input
+									type="text"
+									class="form-control"
+									[(ngModel)]="event.title"
+									placeholder="{{event.title}}"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Primary color
+							</td>
+							<td>
+								<input
+									type="color"
+									NgIf="event.color.primary"
+									[ngModel]="resolveColor(event, 'primary')"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Secondary + text color
+							</td>
+							<td>
+								<input
+									type="color"
+									[ngModel]="resolveColor(event, 'secondary')"
+								/>
+								<input
+									type="color"
+									[ngModel]="resolveColor(event, 'secondaryText')"
+									(ngModelChange)="$event"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Starts at
+							</td>
+							<td>
+								<input
+									class="form-control"
+									type="text"
+									mwlFlatpickr
+									[(ngModel)]="event.start"
+									[altInput]="true"
+									[convertModelValue]="true"
+									[enableTime]="true"
+									dateFormat="Y-m-dTH:i"
+									altFormat="F j, Y H:i"
+									placeholder="Not set"
+								/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Ends at
+							</td>
+							<td>
+								<input
+									class="form-control"
+									type="text"
+									mwlFlatpickr
+									[(ngModel)]="event.end"
+									[altInput]="true"
+									[convertModelValue]="true"
+									[enableTime]="true"
+									dateFormat="Y-m-dTH:i"
+									altFormat="F j, Y H:i"
+									placeholder="Not set"
+								/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 		<div class="modal-footer">
-			<button type="button" class="btn btn-outline-secondary" (click)="activeModal.close('Close click')">Close</button>
+			<button type="button" class="btn btn-danger" (click)="activeModal.close({action: 'cancel', event: undefined})">Cancel</button>
+			<button class="btn btn-success" (click)="save(event)">
+				Save
+			</button>
 		</div>
+
