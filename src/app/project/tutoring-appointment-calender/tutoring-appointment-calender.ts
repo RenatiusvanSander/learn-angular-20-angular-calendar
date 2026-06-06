@@ -146,7 +146,7 @@ refresh = new Subject<void>();
       this.viewDate = date;
 
       if(this.openCreateTutoringDateModal) {
-        this.handleEvent('notSameDay Empty Date clicked', {} as CalendarEvent);
+        this.handleEvent('notSameDay clicked', {} as CalendarEvent);
 
         if(this.activeDayIsOpen === false) {
           this.activeDayIsOpen = true;
@@ -174,7 +174,7 @@ refresh = new Subject<void>();
   }
 
   async handleEvent(action: string, event: CalendarEvent): Promise<void> {
-    event = CalendarEventHelper.createCalendarEvent();
+    event = CalendarEventHelper.createCalendarEvent(this.viewDate);
     const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
     modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
     modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
@@ -186,10 +186,10 @@ refresh = new Subject<void>();
     }
   }
 
-  addEvent(event: CalendarEvent | undefined): void {
+  addEvent(event?: CalendarEvent): void {
     this.events = [
       ...this.events,
-      event === undefined ? CalendarEventHelper.createCalendarEvent(): event,
+      event ?? CalendarEventHelper.createCalendarEvent(),
     ];
   }
 
