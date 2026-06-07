@@ -28,6 +28,7 @@ import { colors } from '../colors';
 import { CreateTutoringDate } from '../modals/create-tutoring-date/create-tutoring-date';
 import { CalendarEventHelper } from '../helpers/calendar-event-helper';
 import { ColorsHelper } from '../helpers/colors-helper';
+import { EditTutoringDate } from '../modals/edit-tutoring-date/edit-tutoring-date';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -129,6 +130,7 @@ refresh = new Subject<void>();
   private modal = inject(NgbModal);
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    let action = '';
     this.openCreateTutoringDateModal = false;
 
     if (isSameMonth(date, this.viewDate)) {
@@ -137,16 +139,19 @@ refresh = new Subject<void>();
         this.openCreateTutoringDateModal = true;
       } else if ( (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ) {
         this.activeDayIsOpen = false;
+        this.openCreateTutoringDateModal = events.length === 0 || events.length > 0;
+        action = 'Create';
       } else if ( !isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) {
         this.activeDayIsOpen = events.length > 0 ? true : false;
         this.openCreateTutoringDateModal = events.length === 0;
+        action = 'Create';
       } else {
         this.activeDayIsOpen = true;
       }
       this.viewDate = date;
 
       if(this.openCreateTutoringDateModal) {
-        this.handleEvent('notSameDay clicked', {} as CalendarEvent);
+        this.handleEvent(action, {} as CalendarEvent);
 
         if(this.activeDayIsOpen === false) {
           this.activeDayIsOpen = true;
@@ -174,14 +179,28 @@ refresh = new Subject<void>();
   }
 
   async handleEvent(action: string, event: CalendarEvent): Promise<void> {
-    event = CalendarEventHelper.createCalendarEvent(this.viewDate);
-    const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
-    modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
-    modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+    if(action === '') {
+      return;
+    }
 
-    const result = await modalTutoringAppointmentCalenadar.result;
+    let result = undefined;
 
-    if((result.action === 'save') && (result.event !== undefined)) {
+    if(action === 'Create') {
+      event = CalendarEventHelper.createCalendarEvent(this.viewDate);
+      const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
+      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
+      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+
+      result = await modalTutoringAppointmentCalenadar.result;
+    } else if(action === 'Edited') {
+      const modalTutoringAppointmentCalenadar = this.modal.open(EditTutoringDate, { size: 'lg' });
+      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
+      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+
+      result = await modalTutoringAppointmentCalenadar.result;
+    }
+
+    if(result !== undefined && result.action === 'save' && result.event !== undefined) {
       this.addEvent(result.event);
     }
   }

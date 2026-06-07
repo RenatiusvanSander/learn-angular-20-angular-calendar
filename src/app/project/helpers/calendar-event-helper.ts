@@ -7,11 +7,13 @@ export class CalendarEventHelper {
 
     static createCalendarEvent(date?: Date): CalendarEvent<any> {
         const eventDate = date ?? new Date();
+        const endDate = new Date(eventDate);
+        endDate.setHours(endDate.getHours() + 1);
 
         return {
             title: 'New event',
             start: startOfDay(eventDate),
-            end: endOfDay(eventDate),
+            end: endDate,
             color: colors['red'],
             draggable: true,
             resizable: {

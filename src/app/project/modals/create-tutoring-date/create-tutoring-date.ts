@@ -11,9 +11,9 @@ import { ColorsHelper } from '../../helpers/colors-helper';
 })
 export class CreateTutoringDate {
 
-resolveColor(event: CalendarEvent<any>, colorType: string): any {
-  return ColorsHelper.resolveColor(event, colorType);
-}
+  resolveColor(event: CalendarEvent<any>, colorType: string): any {
+    return ColorsHelper.resolveColor(event, colorType);
+  }
 
   activeModal: NgbActiveModal = inject(NgbActiveModal);
 

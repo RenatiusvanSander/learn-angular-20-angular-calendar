@@ -12,6 +12,7 @@ import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr
 import { TutoringAppointmentCalender } from './project/tutoring-appointment-calender/tutoring-appointment-calender';
 import { CreateTutoringDate } from './project/modals/create-tutoring-date/create-tutoring-date';
 import { EditTutoringDate } from './project/modals/edit-tutoring-date/edit-tutoring-date';
+import { UpdateTutoringDate } from './project/modals/update-tutoring-date/update-tutoring-date';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { EditTutoringDate } from './project/modals/edit-tutoring-date/edit-tutor
     TutoringAppointmentCalender,
     CreateTutoringDate,
     EditTutoringDate,
+    UpdateTutoringDate,
   ],
   imports: [
     BrowserModule,
