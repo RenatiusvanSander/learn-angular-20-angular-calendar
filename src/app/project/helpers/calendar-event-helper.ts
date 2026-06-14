@@ -1,7 +1,6 @@
 import { colors } from "../colors";
 import { startOfDay } from "date-fns/startOfDay";
 import { AppointmentCalendarEvent } from "../tutoring-appointment-calender/appointment-calendar-event";
-import { TutoringAppointment } from "../models/tutoring-appointment";
 
 export class CalendarEventHelper {
 
