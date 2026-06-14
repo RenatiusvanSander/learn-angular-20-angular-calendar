@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { ColorsHelper } from '../../helpers/colors-helper';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AppointmentCalendarEvent } from '../../tutoring-appointment-calender/appointment-calendar-event';
 
 @Component({
   selector: 'app-edit-tutoring-date',
@@ -12,24 +11,24 @@ import { AppointmentCalendarEvent } from '../../tutoring-appointment-calender/ap
 })
 export class EditTutoringDate {
 
-  resolveColor(event: AppointmentCalendarEvent<any>, colorType: string): any {
+  resolveColor(event: CalendarEvent<any>, colorType: string): any {
     return ColorsHelper.resolveColor(event, colorType);
   }
 
   activeModal: NgbActiveModal = inject(NgbActiveModal);
 
-  event!: AppointmentCalendarEvent;
+  event!: CalendarEvent;
 
   action!: string;
 
   constructor() {
   }
 
-  setEvent(event: AppointmentCalendarEvent) {
+  setEvent(event: CalendarEvent) {
     this.event = event;
   }
 
-  getEvent(): AppointmentCalendarEvent {
+  getEvent(): CalendarEvent {
     return this.event;
   }
 

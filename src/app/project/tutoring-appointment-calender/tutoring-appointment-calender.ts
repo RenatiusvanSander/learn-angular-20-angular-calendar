@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import {
   startOfDay,
-  endOfDay,
   subDays,
   addDays,
   endOfMonth,
@@ -23,13 +22,11 @@ import {
   CalendarEventTimesChangedEvent,
   CalendarView
 } from 'angular-calendar';
-import { EventColor } from 'calendar-utils';
 import { colors } from '../colors';
 import { CreateTutoringDate } from '../modals/create-tutoring-date/create-tutoring-date';
 import { CalendarEventHelper } from '../helpers/calendar-event-helper';
 import { ColorsHelper } from '../helpers/colors-helper';
 import { EditTutoringDate } from '../modals/edit-tutoring-date/edit-tutoring-date';
-import { AppointmentCalendarEvent } from './appointment-calendar-event';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -62,7 +59,7 @@ export class TutoringAppointmentCalender {
 
   modalData!: {
     action: string;
-    event: AppointmentCalendarEvent;
+    event: CalendarEvent;
   };
 
 refresh = new Subject<void>();
@@ -70,21 +67,21 @@ refresh = new Subject<void>();
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
       a11yLabel: 'Edit',
-      onClick: ({ event }: { event: AppointmentCalendarEvent }): void => {
+      onClick: ({ event }: { event: CalendarEvent }): void => {
         this.handleEvent('Edited', event);
       },
     },
     {
       label: '<i class="fas fa-fw fa-trash-alt"></i>',
       a11yLabel: 'Delete',
-      onClick: ({ event }: { event: AppointmentCalendarEvent }): void => {
+      onClick: ({ event }: { event: CalendarEvent }): void => {
         this.events = this.events.filter((iEvent) => iEvent !== event);
         this.handleEvent('Deleted', event);
       },
     },
   ];
 
-  events: AppointmentCalendarEvent[] = [
+  events: CalendarEvent[] = [
     {
       start: subDays(startOfDay(new Date()), 1),
       end: addDays(new Date(), 1),
@@ -130,7 +127,7 @@ refresh = new Subject<void>();
 
   private modal = inject(NgbModal);
 
-  dayClicked({ date, events }: { date: Date; events: AppointmentCalendarEvent[] }): void {
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     let action = '';
     this.openCreateTutoringDateModal = false;
 
@@ -152,7 +149,7 @@ refresh = new Subject<void>();
       this.viewDate = date;
 
       if(this.openCreateTutoringDateModal) {
-        this.handleEvent(action, {} as AppointmentCalendarEvent);
+        this.handleEvent(action, {} as CalendarEvent);
 
         if(this.activeDayIsOpen === false) {
           this.activeDayIsOpen = true;
@@ -179,7 +176,7 @@ refresh = new Subject<void>();
     this.handleEvent('Dropped or resized', event);
   }
 
-  async handleEvent(action: string, event: AppointmentCalendarEvent): Promise<void> {
+  async handleEvent(action: string, event: CalendarEvent): Promise<void> {
     if(action === '') {
       return;
     }
@@ -206,14 +203,14 @@ refresh = new Subject<void>();
     }
   }
 
-  addEvent(event?: AppointmentCalendarEvent): void {
+  addEvent(event?: CalendarEvent): void {
     this.events = [
       ...this.events,
       event ?? CalendarEventHelper.createCalendarEvent(),
     ];
   }
 
-  deleteEvent(eventToDelete: AppointmentCalendarEvent) {
+  deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete);
   }
 
@@ -225,7 +222,7 @@ refresh = new Subject<void>();
     this.activeDayIsOpen = false;
   }
 
-  resolveColor(event: AppointmentCalendarEvent, colorType: string): string {
+  resolveColor(event: CalendarEvent, colorType: string): string {
     return ColorsHelper.resolveColor(event, colorType);
   }
 }

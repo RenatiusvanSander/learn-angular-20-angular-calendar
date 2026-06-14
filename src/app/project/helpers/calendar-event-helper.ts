@@ -1,10 +1,10 @@
+import { CalendarEvent } from "angular-calendar";
 import { colors } from "../colors";
 import { startOfDay } from "date-fns/startOfDay";
-import { AppointmentCalendarEvent } from "../tutoring-appointment-calender/appointment-calendar-event";
 
 export class CalendarEventHelper {
 
-    static createCalendarEvent(date?: Date): AppointmentCalendarEvent {
+    static createCalendarEvent(date?: Date): CalendarEvent {
         const eventDate = date ?? new Date();
         const endDate = new Date(eventDate);
         endDate.setHours(endDate.getHours() + 1);
