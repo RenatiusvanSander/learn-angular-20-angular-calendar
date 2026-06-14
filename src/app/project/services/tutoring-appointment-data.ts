@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { TutoringAppointment } from '../models/tutoring-appointment';
-import { throwError } from 'rxjs';
+import { lastValueFrom, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TutoringAppointmentData {
 
+  private static apiUrl: String = 'http://localhost:8082/tutoring3/test/tutoring-appointments';
+
   appointments: Array<TutoringAppointment>;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.appointments = new Array<TutoringAppointment>();
     this.initializeData();
   }
@@ -46,12 +49,12 @@ export class TutoringAppointmentData {
     this.appointments.push(appointment3);
   }
 
-  getAppointmentsByUser(userId: number): Array<TutoringAppointment> {
+  async getAppointmentsByUser(userId: number): Promise<Array<TutoringAppointment>> {
     if(userId <= 0) {
       throwError(() => new Error('Invalid user ID'));
     }
 
-    return this.appointments;
+    return lastValueFrom(this.http.get<Array<TutoringAppointment>>(TutoringAppointmentData.apiUrl + '/get/by-user-id/' + userId ));
   }
   
 }

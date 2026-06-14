@@ -1,9 +1,10 @@
-import { CalendarEvent, EventColor } from "calendar-utils";
+import { EventColor } from "calendar-utils";
 import { colors } from "../colors";
+import { AppointmentCalendarEvent } from "../tutoring-appointment-calender/appointment-calendar-event";
 
 export class ColorsHelper {
 
-  static resolveColor(event: CalendarEvent, colorType: string): string {
+  static resolveColor(event: AppointmentCalendarEvent, colorType: string): string {
     let color = event.color;
 
     let foundColor: EventColor = ColorsHelper.getColor(color);

@@ -1,11 +1,11 @@
-import { CalendarEvent } from "calendar-utils";
 import { colors } from "../colors";
-import { endOfDay } from "date-fns/endOfDay";
 import { startOfDay } from "date-fns/startOfDay";
+import { AppointmentCalendarEvent } from "../tutoring-appointment-calender/appointment-calendar-event";
+import { TutoringAppointment } from "../models/tutoring-appointment";
 
 export class CalendarEventHelper {
 
-    static createCalendarEvent(date?: Date): CalendarEvent<any> {
+    static createCalendarEvent(date?: Date): AppointmentCalendarEvent {
         const eventDate = date ?? new Date();
         const endDate = new Date(eventDate);
         endDate.setHours(endDate.getHours() + 1);
