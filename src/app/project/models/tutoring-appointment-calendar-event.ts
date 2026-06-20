@@ -1,4 +1,6 @@
 import { CalendarEvent, EventAction, EventColor } from "calendar-utils";
+import { AppointmentCalendarEventModel } from "./tutoring-appointment-calendar-event-model";
+import { TutoringAppointment } from "./tutoring-appointment";
 
 export class TutoringAppointmentCalendarEvent implements CalendarEvent{
     id?: string | number | undefined;
@@ -19,10 +21,14 @@ export class TutoringAppointmentCalendarEvent implements CalendarEvent{
         return newtutoringAppointmentCalendarEvent;
     }
 
-    static tutoringAppointmentToTutoringAppointmentCalendarEvent(tutoringAppointment : TutoringAppointmentCalendarEvent) : TutoringAppointmentCalendarEvent {
-        const tutoringAppointmentCalendarEvent = new TutoringAppointmentCalendarEvent();
+    static fromTutoringAppointmentToAppointmentCalendarEventModel(tutoringAppointment: TutoringAppointment) : AppointmentCalendarEventModel {
+      const calendarEvent = new AppointmentCalendarEventModel({ title: "" });
+      calendarEvent.meta = tutoringAppointment;
+      calendarEvent.title = `Tutoring #${tutoringAppointment.tutoringAppointmentNo}`;
+      calendarEvent.start = new Date(tutoringAppointment.tutoringAppointmentStartDateTime);
+      calendarEvent.end = tutoringAppointment.tutoringAppointmentEndDateTime ? new Date(tutoringAppointment.tutoringAppointmentEndDateTime) : undefined;
 
-        return tutoringAppointmentCalendarEvent;
+      return calendarEvent;
     }
 
 }

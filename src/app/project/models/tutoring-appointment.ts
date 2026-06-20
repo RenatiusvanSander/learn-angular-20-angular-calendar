@@ -22,7 +22,7 @@ export class TutoringAppointment {
         return newTutoringAppointment;
     }
 
-    static fromAppointmentCalendarEventModel(calendarEvent: AppointmentCalendarEventModel) : TutoringAppointment {
+    static fromAppointmentCalendarEventModelToTutoringAppointment(calendarEvent: AppointmentCalendarEventModel) : TutoringAppointment {
       const tutoringAppointment = new TutoringAppointment();
       tutoringAppointment.tutoringAppointmentNo = calendarEvent.meta ? calendarEvent.meta.tutoringAppointmentNo as number : 0;
       tutoringAppointment.tutoringAppointmentStartDateTime = calendarEvent.start.toISOString();
@@ -34,4 +34,5 @@ export class TutoringAppointment {
 
       return tutoringAppointment;
     }
+    
 }
