@@ -13,6 +13,7 @@ import { TutoringAppointmentCalender } from './project/tutoring-appointment-cale
 import { CreateTutoringDate } from './project/modals/create-tutoring-date/create-tutoring-date';
 import { EditTutoringDate } from './project/modals/edit-tutoring-date/edit-tutoring-date';
 import { UpdateTutoringDate } from './project/modals/update-tutoring-date/update-tutoring-date';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { UpdateTutoringDate } from './project/modals/update-tutoring-date/update
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideFlatpickrDefaults(),
+    provideHttpClient(),
     provideCalendar({
       provide: DateAdapter,
       useFactory: adapterFactory,

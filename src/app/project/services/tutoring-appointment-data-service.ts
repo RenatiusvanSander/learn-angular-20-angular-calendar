@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TutoringAppointment } from '../models/tutoring-appointment';
-import { lastValueFrom, throwError } from 'rxjs';
+import { firstValueFrom, lastValueFrom, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TutoringAppointmentData {
+export class TutoringAppointmentDataService {
 
   private static apiUrl: String = 'http://localhost:8082/tutoring3/test/tutoring-appointments';
 
@@ -54,7 +54,10 @@ export class TutoringAppointmentData {
       throwError(() => new Error('Invalid user ID'));
     }
 
-    return lastValueFrom(this.http.get<Array<TutoringAppointment>>(TutoringAppointmentData.apiUrl + '/get/by-user-id/' + userId ));
+    return await lastValueFrom(this.http.get<Array<TutoringAppointment>>(`${TutoringAppointmentDataService.apiUrl}/get/by-user-id/${userId}`));
   }
-  
+
+  async persistAppointment(appointment: TutoringAppointment): Promise<TutoringAppointment> {
+    return await firstValueFrom(this.http.post<TutoringAppointment>(`${TutoringAppointmentDataService.apiUrl}/save`, appointment));
+  }
 }

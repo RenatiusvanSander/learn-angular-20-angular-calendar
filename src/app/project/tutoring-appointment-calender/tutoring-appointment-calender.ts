@@ -3,16 +3,13 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   TemplateRef,
-  inject
+  inject,
+  OnInit,
+  Type
 } from '@angular/core';
 import {
-  startOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
   isSameDay,
   isSameMonth,
-  addHours,
 } from 'date-fns';
 import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,11 +19,14 @@ import {
   CalendarEventTimesChangedEvent,
   CalendarView
 } from 'angular-calendar';
-import { colors } from '../colors';
 import { CreateTutoringDate } from '../modals/create-tutoring-date/create-tutoring-date';
 import { CalendarEventHelper } from '../helpers/calendar-event-helper';
 import { ColorsHelper } from '../helpers/colors-helper';
 import { EditTutoringDate } from '../modals/edit-tutoring-date/edit-tutoring-date';
+import { TutoringAppointmentDataService } from '../services/tutoring-appointment-data-service';
+import { TutoringAppointmentMapperService } from '../services/tutoring-appointment-mapper-service';
+import { ServiceContractService } from '../services/service-contract-service';
+import { ServiceContract } from '../models/service-contract';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -62,7 +62,9 @@ export class TutoringAppointmentCalender {
     event: CalendarEvent;
   };
 
-refresh = new Subject<void>();
+  userId: number;
+
+  refresh = new Subject<void>();
   actions: CalendarEventAction[] = [
     {
       label: '<i class="fas fa-fw fa-pencil-alt"></i>',
@@ -81,47 +83,21 @@ refresh = new Subject<void>();
     },
   ];
 
-  events: CalendarEvent[] = [
-    {
-      start: subDays(startOfDay(new Date()), 1),
-      end: addDays(new Date(), 1),
-      title: 'A 3 day event',
-      color: colors['red'],
-      actions: this.actions,
-      allDay: true,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-    {
-      start: startOfDay(new Date()),
-      title: 'An event with no end date',
-      color: colors['yellow'],
-      actions: this.actions,
-    },
-    {
-      start: subDays(endOfMonth(new Date()), 3),
-      end: addDays(endOfMonth(new Date()), 3),
-      title: 'A long event that spans 2 months',
-      color: colors['blue'],
-      allDay: true,
-          },
-    {
-      start: addHours(startOfDay(new Date()), 2),
-      end: addHours(new Date(), 2),
-      title: 'A draggable and resizable event',
-      color: colors['yellow'],
-      actions: this.actions,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-      draggable: true,
-    },
-  ];
+  serviceContracts: Array<ServiceContract> = new Array<ServiceContract>();
 
+  constructor(private appointmentDataService: TutoringAppointmentDataService, private appointmentMapper: TutoringAppointmentMapperService, private serviceContractService: ServiceContractService) {
+    this.userId = 1;
+  }
+
+  async ngOnInit(): Promise<void> {
+    const appointments = await this.appointmentDataService.getAppointmentsByUser(this.userId);
+    this.events = this.appointmentMapper.convertTutoringAppointmentToAppointmentCalendarEventModel(appointments, this.actions);
+
+    this.serviceContracts = await this.serviceContractService.getServiceContracts(this.userId);
+  }
+
+  events: Array<CalendarEvent> = new Array<CalendarEvent>();
+  eventsToPersist: Array<CalendarEvent> = new Array<CalendarEvent>();
   activeDayIsOpen: boolean = true;
   openCreateTutoringDateModal: boolean = false;
 
@@ -185,15 +161,19 @@ refresh = new Subject<void>();
 
     if(action === 'Create') {
       event = CalendarEventHelper.createCalendarEvent(this.viewDate);
-      const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
-      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
-      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
-
-      result = await modalTutoringAppointmentCalenadar.result;
+      result = await this.openModal(CreateTutoringDate, event, action, this.serviceContracts);
     } else if(action === 'Edited') {
       const modalTutoringAppointmentCalenadar = this.modal.open(EditTutoringDate, { size: 'lg' });
       modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
       modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
+
+      result = await modalTutoringAppointmentCalenadar.result;
+    } else if(action === 'Clicked') {
+      const modalTutoringAppointmentCalenadar = this.modal.open(EditTutoringDate, { size: 'lg' });
+      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
+      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
 
       result = await modalTutoringAppointmentCalenadar.result;
     }
@@ -204,14 +184,24 @@ refresh = new Subject<void>();
   }
 
   addEvent(event?: CalendarEvent): void {
-    this.events = [
+    const foundEvent = this.events.find(e => e.id === event?.id);
+
+    if(foundEvent) {
+      // Update existing event
+      this.events = this.events.map(e => e === foundEvent ? { ...e, ...event } : e);
+      this.refresh.next();
+    } else {
+      this.events = [
       ...this.events,
       event ?? CalendarEventHelper.createCalendarEvent(),
-    ];
+      ];
+      this.refresh.next();
+    }
   }
 
   deleteEvent(eventToDelete: CalendarEvent): void {
     this.events = this.events.filter((event) => event !== eventToDelete);
+    this.refresh.next();
   }
 
   setView(view: CalendarView) {
@@ -224,5 +214,14 @@ refresh = new Subject<void>();
 
   resolveColor(event: CalendarEvent, colorType: string): string {
     return ColorsHelper.resolveColor(event, colorType);
+  }
+
+  openModal( component: any, event: CalendarEvent, action: string, serviceContracts: Array<ServiceContract>): Promise<any> {
+    const modal = this.modal.open(component, { size: 'lg' });
+      modal.componentInstance.setEvent(event);
+      modal.componentInstance.setAction(action);
+      modal.componentInstance.setContractServices(serviceContracts);
+
+      return modal.result;
   }
 }

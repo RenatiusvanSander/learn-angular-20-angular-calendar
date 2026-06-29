@@ -2,6 +2,7 @@ import { Component, inject} from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CalendarEvent } from 'angular-calendar';
 import { ColorsHelper } from '../../helpers/colors-helper';
+import { ServiceContract } from '../../models/service-contract';
 
 @Component({
   selector: 'app-create-tutoring-date',
@@ -21,6 +22,8 @@ export class CreateTutoringDate {
 
   action!: string;
 
+  serviceContracts: Array<ServiceContract> = new Array<ServiceContract>();
+
   constructor() {
   }
 
@@ -34,6 +37,10 @@ export class CreateTutoringDate {
 
   setAction(action: string) {
     this.action = action;
+  }
+
+  setContractServices(serviceContracts: Array<ServiceContract>) {
+    this.serviceContracts = serviceContracts;
   }
 
   save(event: CalendarEvent<any>) {
