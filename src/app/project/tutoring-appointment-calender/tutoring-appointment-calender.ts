@@ -4,8 +4,7 @@ import {
   ViewChild,
   TemplateRef,
   inject,
-  OnInit,
-  Type
+  OnInit
 } from '@angular/core';
 import {
   isSameDay,
@@ -47,7 +46,7 @@ import { ServiceContract } from '../models/service-contract';
     `,
   ]
 })
-export class TutoringAppointmentCalender {
+export class TutoringAppointmentCalender implements OnInit {
   @ViewChild('modalContent', { static: true })
   modalContent!: TemplateRef<any>;
 
@@ -183,19 +182,26 @@ export class TutoringAppointmentCalender {
     }
   }
 
-  addEvent(event?: CalendarEvent): void {
-    const foundEvent = this.events.find(e => e.id === event?.id);
+  async addEvent(event?: CalendarEvent): Promise<void> {
+    const indexToUpdate = this.events.findIndex(e => e.id === event?.id);
 
-    if(foundEvent) {
-      // Update existing event
-      this.events = this.events.map(e => e === foundEvent ? { ...e, ...event } : e);
-      this.refresh.next();
+    if(indexToUpdate !== undefined) {
+      const tutoringAppointment = this.appointmentMapper.convertAppointmentCalendarEventModelToTutoringAppointment([event])[0];
+      const persistResult = await this.appointmentDataService.updateAppointment(tutoringAppointment);
+
+      if(persistResult.tutoringAppointmentNo > 0) {
+        this.events[indexToUpdate] = event!;
+        this.refresh.next();
+      }
     } else {
-      this.events = [
-      ...this.events,
-      event ?? CalendarEventHelper.createCalendarEvent(),
-      ];
-      this.refresh.next();
+      const tutoringAppointment = this.appointmentMapper.convertAppointmentCalendarEventModelToTutoringAppointment([event])[0];
+      const persistResult = await this.appointmentDataService.persistAppointment(tutoringAppointment);
+
+      if(persistResult.tutoringAppointmentNo > 0) {
+        event = this.appointmentMapper.convertSingleTutoringAppointmentToAppointmentCalendarEventModel(persistResult, this.actions);
+        this.events.push(event);
+        this.refresh.next();
+     }
     }
   }
 

@@ -60,4 +60,8 @@ export class TutoringAppointmentDataService {
   async persistAppointment(appointment: TutoringAppointment): Promise<TutoringAppointment> {
     return await firstValueFrom(this.http.post<TutoringAppointment>(`${TutoringAppointmentDataService.apiUrl}/save`, appointment));
   }
+
+  async updateAppointment(appointment: TutoringAppointment): Promise<TutoringAppointment> {
+    return await firstValueFrom(this.http.put<TutoringAppointment>(`${TutoringAppointmentDataService.apiUrl}/update/single-appointment`, appointment));
+  }
 }

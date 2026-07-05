@@ -18,7 +18,11 @@ export class TutoringAppointmentMapperService {
     return calendarEvents;
   }
 
-  convertAppointmentCalendarEventModelToTutoringAppointment(calendarEvents: Array<AppointmentCalendarEventModel>): Array<TutoringAppointment> {
+  convertSingleTutoringAppointmentToAppointmentCalendarEventModel(appointment: TutoringAppointment, actions: CalendarEventAction[]): AppointmentCalendarEventModel {
+    return AppointmentCalendarEventModel.fromTutoringAppointmentToAppointmentCalendarEventModel(appointment, actions);
+  }
+
+  convertAppointmentCalendarEventModelToTutoringAppointment(calendarEvents: Array<any>): Array<TutoringAppointment> {
     let tutoringAppointments: Array<TutoringAppointment> = new Array<TutoringAppointment>();
     for (let calendarEvent of calendarEvents) {
       let tutoringAppointment = TutoringAppointment.fromAppointmentCalendarEventModelToTutoringAppointment(calendarEvent);
