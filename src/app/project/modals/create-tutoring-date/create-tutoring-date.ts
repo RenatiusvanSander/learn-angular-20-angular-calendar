@@ -47,4 +47,12 @@ export class CreateTutoringDate {
     this.activeModal.close({ event, action: 'save' });
   }
 
+  onChangeUpdateAppointmentServiceContract(event: any) {
+    const selectedIndex = event.selectedIndex;
+    
+    if (selectedIndex !== -1) {
+      this.event.meta.serviceContractId = +event[selectedIndex].id;
+    }
+  }
+
 }

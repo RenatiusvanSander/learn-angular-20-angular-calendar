@@ -22,6 +22,16 @@
 				</tr>
 				<tr>
 					<td>
+						service contract
+					</td>
+					<td>
+						<select [(ngModel)]="serviceContracts" placeholder="waehle Service Contract aus" class="form-control" (change)="onChangeUpdateAppointmentServiceContract($event.target)">
+							<option *ngFor="let serviceContract of serviceContracts" [value]="serviceContract.serviceContractNo" id="{{serviceContract.serviceContractNo}}">{{serviceContract.serviceContractName}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						Primary color
 					</td>
 					<td>

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CalendarEvent } from 'angular-calendar';
 import { ColorsHelper } from '../../helpers/colors-helper';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ServiceContract } from '../../models/service-contract';
 
 @Component({
   selector: 'app-edit-tutoring-date',
@@ -21,11 +22,16 @@ export class EditTutoringDate {
 
   action!: string;
 
+  selectedServiceContractId!: number;
+
+  serviceContracts: Array<ServiceContract> = new Array<ServiceContract>();
+
   constructor() {
   }
 
   setEvent(event: CalendarEvent) {
     this.event = event;
+    this.selectedServiceContractId = event.meta.serviceContractId;
   }
 
   getEvent(): CalendarEvent {
@@ -36,8 +42,19 @@ export class EditTutoringDate {
     this.action = action;
   }
 
+  setContractServices(serviceContracts: Array<ServiceContract>) {
+    this.serviceContracts = serviceContracts;
+  }
+
   save(event: CalendarEvent<any>) {
     this.activeModal.close({ event, action: 'save' });
   }
 
+    onChangeUpdateAppointmentServiceContract(event: any) {
+    const selectedIndex = event.selectedIndex;
+    
+    if (selectedIndex !== -1) {
+      this.event.meta.serviceContractId = +event[selectedIndex].id;
+    }
+  }
 }

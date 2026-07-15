@@ -6,7 +6,7 @@ import { TutoringAppointment } from "../models/tutoring-appointment";
 
 export class CalendarEventHelper {
 
-    static createCalendarEvent(date?: Date): CalendarEvent {
+    static createCalendarEvent(userId: number, date?: Date): CalendarEvent {
         const eventDate = date ?? new Date();
         const endDate = new Date(eventDate);
         endDate.setHours(endDate.getHours() + 1);
@@ -25,6 +25,12 @@ export class CalendarEventHelper {
         
         const newAppointment = new TutoringAppointment();
         newAppointment.tutoringAppointmentNo = 0;
+        newAppointment.tutoringAppointmentUser = userId;
+        newAppointment.serviceContractId = 0;
+        newAppointment.isAccomplished = false;
+        newAppointment.tutoringAppointmentDate = undefined as unknown as string;
+        newAppointment.tutoringAppointmentStartDateTime = undefined as unknown as string;
+        newAppointment.tutoringAppointmentEndDateTime = undefined as unknown as string;
         newCalendarEvent.meta = newAppointment;
 
         return newCalendarEvent;
