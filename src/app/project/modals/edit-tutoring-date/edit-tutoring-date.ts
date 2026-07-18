@@ -31,7 +31,6 @@ export class EditTutoringDate {
 
   setEvent(event: CalendarEvent) {
     this.event = event;
-    this.selectedServiceContractId = event.meta.serviceContractId;
   }
 
   getEvent(): CalendarEvent {
@@ -46,11 +45,15 @@ export class EditTutoringDate {
     this.serviceContracts = serviceContracts;
   }
 
+  setSelectedServiceContractId(serviceContractId: number) {
+    this.selectedServiceContractId = serviceContractId;
+  }
+
   save(event: CalendarEvent<any>) {
     this.activeModal.close({ event, action: 'save' });
   }
 
-    onChangeUpdateAppointmentServiceContract(event: any) {
+  onChangeUpdateAppointmentServiceContract(event: any) {
     const selectedIndex = event.selectedIndex;
     
     if (selectedIndex !== -1) {

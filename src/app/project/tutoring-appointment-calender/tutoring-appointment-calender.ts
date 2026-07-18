@@ -171,6 +171,7 @@ export class TutoringAppointmentCalender implements OnInit {
       modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
       modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
       modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
+      modalTutoringAppointmentCalenadar.componentInstance.setSelectedServiceContractId(event.meta.serviceContractId);
 
       result = await modalTutoringAppointmentCalenadar.result;
     } else if(action === 'Clicked') {
