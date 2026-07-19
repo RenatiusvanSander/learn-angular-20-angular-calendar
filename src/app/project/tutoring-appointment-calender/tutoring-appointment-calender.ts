@@ -138,17 +138,15 @@ export class TutoringAppointmentCalender implements OnInit {
     newStart,
     newEnd,
   }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
+    const startOfDay = new Date(newStart);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const copiedEvent = CalendarEventHelper.copyCalendarEvent(event);
+    copiedEvent.start = newStart;
+    copiedEvent.end = newEnd;
+    copiedEvent.title = 'Nachhilfe am ' + startOfDay.toUTCString();
+
+    this.handleEvent('Dropped or resized', copiedEvent);
   }
 
   async handleEvent(action: string, event: CalendarEvent): Promise<void> {
@@ -169,6 +167,7 @@ export class TutoringAppointmentCalender implements OnInit {
       case 'Deleted':
         break;
       case 'Dropped or resized':
+        result = await this.openTutoringDateModal(EditTutoringDate, event, action, this.serviceContracts, event.meta.serviceContractId);
         break;
       default:
         break;

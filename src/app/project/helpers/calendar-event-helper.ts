@@ -35,4 +35,23 @@ export class CalendarEventHelper {
 
         return newCalendarEvent;
     }
+
+    static copyCalendarEvent(originalEvent: CalendarEvent): CalendarEvent {
+        const copiedEvent = new AppointmentCalendarEventModel({
+            id: originalEvent.id,
+            start: new Date(originalEvent.start),
+            end: originalEvent.end ? new Date(originalEvent.end) : undefined,
+            title: originalEvent.title,
+            color: originalEvent.color,
+            resizable: originalEvent.resizable ? { ...originalEvent.resizable } : undefined,
+            draggable: originalEvent.draggable,
+            meta: originalEvent.meta ? { ...originalEvent.meta } : undefined,
+        });
+
+        copiedEvent.allDay = originalEvent.allDay;
+        copiedEvent.actions = originalEvent.actions ? [...originalEvent.actions] : undefined;
+        copiedEvent.cssClass = originalEvent.cssClass;
+
+        return copiedEvent;
+    }
 }
