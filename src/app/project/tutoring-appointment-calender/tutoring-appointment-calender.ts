@@ -158,29 +158,20 @@ export class TutoringAppointmentCalender implements OnInit {
 
     let result = undefined;
 
-    if(action === 'Create') {
-      event = CalendarEventHelper.createCalendarEvent(this.userId, this.viewDate);
-      const modalTutoringAppointmentCalenadar = this.modal.open(CreateTutoringDate, { size: 'lg' });
-      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
-      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
-      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
-
-      result = await modalTutoringAppointmentCalenadar.result;
-    } else if(action === 'Edited') {
-      const modalTutoringAppointmentCalenadar = this.modal.open(EditTutoringDate, { size: 'lg' });
-      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
-      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
-      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
-      modalTutoringAppointmentCalenadar.componentInstance.setSelectedServiceContractId(event.meta.serviceContractId);
-
-      result = await modalTutoringAppointmentCalenadar.result;
-    } else if(action === 'Clicked') {
-      const modalTutoringAppointmentCalenadar = this.modal.open(EditTutoringDate, { size: 'lg' });
-      modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
-      modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
-      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(this.serviceContracts);
-
-      result = await modalTutoringAppointmentCalenadar.result;
+    switch(action) {
+      case 'Clicked':
+      case 'Edited':
+        result = await this.openTutoringDateModal(EditTutoringDate, event, action, this.serviceContracts, event.meta.serviceContractId);
+        break;
+      case 'Create':
+        result = await this.openTutoringDateModal(CreateTutoringDate, event, action, this.serviceContracts, -1);
+        break;
+      case 'Deleted':
+        break;
+      case 'Dropped or resized':
+        break;
+      default:
+        break;
     }
 
     if(result !== undefined && result.action === 'save' && result.event !== undefined) {
@@ -188,30 +179,38 @@ export class TutoringAppointmentCalender implements OnInit {
     }
   }
 
+  async openTutoringDateModal(component: any, event: CalendarEvent, action: string, serviceContractsRef: Array<ServiceContract>, selectedServiceContractId: number): Promise<any> {
+    const modalTutoringAppointmentCalenadar = this.modal.open(component, { size: 'lg' });
+    modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
+    modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
+    modalTutoringAppointmentCalenadar.componentInstance.setContractServices(serviceContractsRef);
+    if(selectedServiceContractId > -1) {
+      modalTutoringAppointmentCalenadar.componentInstance.setSelectedServiceContractId(selectedServiceContractId);
+    }
+
+    return await modalTutoringAppointmentCalenadar.result;
+  }
+
   async addEvent(event?: CalendarEvent): Promise<void> {
     const indexToUpdate = this.events.findIndex(e => e.id === event?.id);
 
     if(indexToUpdate > 0) {
       const tutoringAppointment = this.appointmentMapper.convertAppointmentCalendarEventModelToTutoringAppointment([event])[0];
-      console.log('Updating appointment: ', tutoringAppointment);
-      //const persistResult = await this.appointmentDataService.updateAppointment(tutoringAppointment);
+      const persistResult = await this.appointmentDataService.updateAppointment(tutoringAppointment);
 
-      /*
       if(persistResult.tutoringAppointmentNo > 0) {
         this.events[indexToUpdate] = event!;
         this.refresh.next();
-      }*/
+      }
     } else {
       const tutoringAppointment = this.appointmentMapper.convertAppointmentCalendarEventModelToTutoringAppointment([event])[0];
-      //const persistResult = await this.appointmentDataService.persistAppointment(tutoringAppointment);
-      console.log('Persisting appointment: ', tutoringAppointment);
+      const persistResult = await this.appointmentDataService.persistAppointment(tutoringAppointment);
 
-      /*
       if(persistResult.tutoringAppointmentNo > 0) {
         event = this.appointmentMapper.convertSingleTutoringAppointmentToAppointmentCalendarEventModel(persistResult, this.actions);
         this.events.push(event);
         this.refresh.next();
-      }*/
+      }
     }
   }
 
