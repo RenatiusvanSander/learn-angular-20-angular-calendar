@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h4 class="modal-title">Delete {{event.title}}</h4>
+	<button type="button" class="btn-close" aria-label="Close" (click)="cancel()"></button>
+</div>
+<div class="modal-body">
+	<div class="table-responsive">
+        M&ouml;chten Sie den Termin wirklich l&ouml;schen?
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+	<button class="btn btn-success" (click)="delete(event)">
+		Delete
+	</button>
+</div>

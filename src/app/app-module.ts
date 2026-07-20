@@ -14,6 +14,7 @@ import { CreateTutoringDate } from './project/modals/create-tutoring-date/create
 import { EditTutoringDate } from './project/modals/edit-tutoring-date/edit-tutoring-date';
 import { UpdateTutoringDate } from './project/modals/update-tutoring-date/update-tutoring-date';
 import { provideHttpClient } from '@angular/common/http';
+import { DeleteTutoringDate } from './project/modals/delete-tutoring-date/delete-tutoring-date';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { provideHttpClient } from '@angular/common/http';
     CreateTutoringDate,
     EditTutoringDate,
     UpdateTutoringDate,
+    DeleteTutoringDate,
   ],
   imports: [
     BrowserModule,

@@ -26,6 +26,7 @@ import { TutoringAppointmentDataService } from '../services/tutoring-appointment
 import { TutoringAppointmentMapperService } from '../services/tutoring-appointment-mapper-service';
 import { ServiceContractService } from '../services/service-contract-service';
 import { ServiceContract } from '../models/service-contract';
+import { DeleteTutoringDate } from '../modals/delete-tutoring-date/delete-tutoring-date';
 
 @Component({
   selector: 'tutoring-appointment-calender',
@@ -165,6 +166,12 @@ export class TutoringAppointmentCalender implements OnInit {
         result = await this.openTutoringDateModal(CreateTutoringDate, event, action, this.serviceContracts, -1);
         break;
       case 'Deleted':
+        result = await this.openTutoringDateModal(DeleteTutoringDate, event, action, undefined, -1);
+
+        if(result !== undefined && result.action === 'delete' && result.event !== undefined) {
+          // this.deleteEvent(result.event);
+          return;
+        }
         break;
       case 'Dropped or resized':
         result = await this.openTutoringDateModal(EditTutoringDate, event, action, this.serviceContracts, event.meta.serviceContractId);
@@ -173,16 +180,18 @@ export class TutoringAppointmentCalender implements OnInit {
         break;
     }
 
-    if(result !== undefined && result.action === 'save' && result.event !== undefined) {
+    if(result !== undefined && (result.action === 'save' || result.action === 'cancel') && result.event !== undefined) {
       this.addEvent(result.event);
     }
   }
 
-  async openTutoringDateModal(component: any, event: CalendarEvent, action: string, serviceContractsRef: Array<ServiceContract>, selectedServiceContractId: number): Promise<any> {
+  async openTutoringDateModal(component: any, event: CalendarEvent, action: string, serviceContractsRef: Array<ServiceContract> | undefined, selectedServiceContractId: number): Promise<any> {
     const modalTutoringAppointmentCalenadar = this.modal.open(component, { size: 'lg' });
     modalTutoringAppointmentCalenadar.componentInstance.setEvent(event);
     modalTutoringAppointmentCalenadar.componentInstance.setAction(action);
-    modalTutoringAppointmentCalenadar.componentInstance.setContractServices(serviceContractsRef);
+    if(serviceContractsRef !== undefined) {
+      modalTutoringAppointmentCalenadar.componentInstance.setContractServices(serviceContractsRef);
+    }
     if(selectedServiceContractId > -1) {
       modalTutoringAppointmentCalenadar.componentInstance.setSelectedServiceContractId(selectedServiceContractId);
     }
