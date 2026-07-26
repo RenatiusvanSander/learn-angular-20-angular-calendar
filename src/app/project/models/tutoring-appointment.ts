@@ -27,7 +27,7 @@ export class TutoringAppointment {
       tutoringAppointment.tutoringAppointmentNo = calendarEvent.meta ? calendarEvent.meta.tutoringAppointmentNo as number : 0;
       tutoringAppointment.tutoringAppointmentStartDateTime = calendarEvent.start.toISOString();
       tutoringAppointment.tutoringAppointmentEndDateTime = calendarEvent.end ? calendarEvent.end.toISOString() : '';
-      tutoringAppointment.tutoringAppointmentDate = calendarEvent.start.toISOString().split('T')[0];
+      tutoringAppointment.tutoringAppointmentDate = calendarEvent.meta ? calendarEvent.meta.tutoringAppointmentDate : '';
       tutoringAppointment.isAccomplished = calendarEvent.meta ? calendarEvent.meta.isAccomplished : false;
       tutoringAppointment.serviceContractId = calendarEvent.meta ? calendarEvent.meta.serviceContractId : 0;
       tutoringAppointment.tutoringAppointmentUser = calendarEvent.meta ? calendarEvent.meta.tutoringAppointmentUser : 0;

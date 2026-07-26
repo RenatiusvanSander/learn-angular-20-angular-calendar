@@ -163,6 +163,7 @@ export class TutoringAppointmentCalender implements OnInit {
         result = await this.openTutoringDateModal(EditTutoringDate, event, action, this.serviceContracts, event.meta.serviceContractId);
         break;
       case 'Create':
+        event = CalendarEventHelper.createCalendarEvent(this.userId, this.viewDate);
         result = await this.openTutoringDateModal(CreateTutoringDate, event, action, this.serviceContracts, -1);
         break;
       case 'Deleted':

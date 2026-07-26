@@ -7,13 +7,16 @@ import { TutoringAppointment } from "../models/tutoring-appointment";
 export class CalendarEventHelper {
 
     static createCalendarEvent(userId: number, date?: Date): CalendarEvent {
-        const eventDate = date ?? new Date();
-        const endDate = new Date(eventDate);
-        endDate.setHours(endDate.getHours() + 1);
+        const dateToUse = new Date(date || new Date());
+        dateToUse.setHours(0, 0, 0, 0);
+        const startDate = new Date(date || new Date());
+        startDate.setHours(19, 0, 0, 0);
+        const endDate = new Date(date || new Date());
+        endDate.setHours(startDate.getHours() + 1, 0, 0, 0);
 
         const newCalendarEvent = new AppointmentCalendarEventModel({
             title: 'New event',
-            start: startOfDay(eventDate),
+            start: startDate,
             end: endDate,
             color: colors['red'],
             draggable: true,
@@ -28,7 +31,7 @@ export class CalendarEventHelper {
         newAppointment.tutoringAppointmentUser = userId;
         newAppointment.serviceContractId = 0;
         newAppointment.isAccomplished = false;
-        newAppointment.tutoringAppointmentDate = undefined as unknown as string;
+        newAppointment.tutoringAppointmentDate = startOfDay(startDate).toISOString();
         newAppointment.tutoringAppointmentStartDateTime = undefined as unknown as string;
         newAppointment.tutoringAppointmentEndDateTime = undefined as unknown as string;
         newCalendarEvent.meta = newAppointment;
