@@ -7,11 +7,11 @@ import { TutoringAppointment } from "../models/tutoring-appointment";
 export class CalendarEventHelper {
 
     static createCalendarEvent(userId: number, date?: Date): CalendarEvent {
-        const dateToUse = new Date(date || new Date());
-        dateToUse.setHours(0, 0, 0, 0);
-        const startDate = new Date(date || new Date());
-        startDate.setHours(19, 0, 0, 0);
-        const endDate = new Date(date || new Date());
+        const dateToUse: Date = startOfDay(date || new Date());
+        const startDate: Date = new Date(date || new Date());
+        const startHour: number = CalendarEventHelper.startHourOfDay(dateToUse);
+        startDate.setHours(startHour, 0, 0, 0);
+        const endDate: Date = new Date(date || new Date());
         endDate.setHours(startDate.getHours() + 1, 0, 0, 0);
 
         const newCalendarEvent = new AppointmentCalendarEventModel({
@@ -30,8 +30,8 @@ export class CalendarEventHelper {
         newAppointment.tutoringAppointmentNo = 0;
         newAppointment.tutoringAppointmentUser = userId;
         newAppointment.serviceContractId = 0;
-        newAppointment.isAccomplished = false;
-        newAppointment.tutoringAppointmentDate = startOfDay(startDate).toISOString();
+        newAppointment.accomplished = false;
+        newAppointment.tutoringAppointmentDate = dateToUse.toISOString();
         newAppointment.tutoringAppointmentStartDateTime = undefined as unknown as string;
         newAppointment.tutoringAppointmentEndDateTime = undefined as unknown as string;
         newCalendarEvent.meta = newAppointment;
@@ -56,5 +56,11 @@ export class CalendarEventHelper {
         copiedEvent.cssClass = originalEvent.cssClass;
 
         return copiedEvent;
+    }
+
+    static startHourOfDay(date: Date): number {
+        const weekDay = date.getDay();
+        
+        return weekDay > 5 || weekDay === 0 ? 10 : 19;
     }
 }

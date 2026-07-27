@@ -92,8 +92,9 @@ export class TutoringAppointmentCalender implements OnInit {
   async ngOnInit(): Promise<void> {
     const appointments = await this.appointmentDataService.getAppointmentsByUser(this.userId);
     this.events = this.appointmentMapper.convertTutoringAppointmentToAppointmentCalendarEventModel(appointments, this.actions);
-
     this.serviceContracts = await this.serviceContractService.getServiceContracts(this.userId);
+
+    this.refresh.next();
   }
 
   events: Array<CalendarEvent> = new Array<CalendarEvent>();
