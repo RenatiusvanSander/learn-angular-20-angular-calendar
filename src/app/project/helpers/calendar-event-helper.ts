@@ -63,4 +63,15 @@ export class CalendarEventHelper {
         
         return weekDay > 5 || weekDay === 0 ? 10 : 19;
     }
+
+    static dateToIso8601String(date: Date): string {
+        const days =date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const seconds = date.getSeconds();
+
+        return `${year}-${month.toString().padStart(2, '0')}-${days.toString().padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
 }
