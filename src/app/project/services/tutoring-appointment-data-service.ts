@@ -64,4 +64,8 @@ export class TutoringAppointmentDataService {
   async updateAppointment(appointment: TutoringAppointment): Promise<TutoringAppointment> {
     return await firstValueFrom(this.http.put<TutoringAppointment>(`${TutoringAppointmentDataService.apiUrl}/update/single-appointment`, appointment));
   }
+
+  async deleteAppointment(appointment: TutoringAppointment): Promise<TutoringAppointment> {
+    return await firstValueFrom(this.http.delete<TutoringAppointment>(`${TutoringAppointmentDataService.apiUrl}/delete/${appointment.tutoringAppointmentNo}`));
+  }
 }
